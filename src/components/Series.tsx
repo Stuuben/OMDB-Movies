@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 
 //@ts-expect-error ???
@@ -7,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState } from "react";
 import { ImdbInterface } from "../models/ImbdInterface";
+import { Link } from "react-router-dom";
 
 export const Series = () => {
   const breakingBad = "tt0903747";
@@ -32,22 +32,26 @@ export const Series = () => {
       arrows: true,
     };
 
+    console.log("imdbSeries", imdbSeries);
+
     return (
       <Slider {...settings}>
         {imdbSeries.map((series, index) => (
-          <div key={index} className="p-2">
-            <h3 className="text-xl">{series.Title}</h3>
-            <div>
-              <img
-                src={series.Poster}
-                alt=""
-                style={{ width: "300px", height: "370px" }}
-              />
-            </div>
+          <Link key={index} state={{ series }} to={`/${series.imdbID}`}>
+            <div key={index} className="p-2 cursor-pointer">
+              <h3 className="text-xl">{series.Title}</h3>
+              <div>
+                <img
+                  src={series.Poster}
+                  alt=""
+                  style={{ width: "300px", height: "370px" }}
+                />
+              </div>
 
-            <p>{series.Year}</p>
-            <p>{series.Ratings[0].Value}</p>
-          </div>
+              <p>{series.Year}</p>
+              <p>{series.Ratings[0].Value}</p>
+            </div>
+          </Link>
         ))}
       </Slider>
     );

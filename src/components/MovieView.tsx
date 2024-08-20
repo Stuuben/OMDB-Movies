@@ -6,13 +6,17 @@ export const MovieView = () => {
   const location = useLocation();
   const movie = location.state?.movie || null;
   console.log("movie", movie);
+  const series = location.state?.series || null;
+  console.log("series", series);
 
   const apiKey = import.meta.env.VITE_API_KEY;
 
   const [film, setFilm] = useState<ImdbInterface | null>(null);
 
+  const id = movie?.imdbID || series?.imdbID;
+
   const getMovie = () => {
-    fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${movie.imdbID}`)
+    fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${id}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("data view", data);
@@ -27,9 +31,12 @@ export const MovieView = () => {
     getMovie();
   }, []);
 
-  if (!movie) {
+  if (!movie && !series) {
     return <div>No movie found</div>;
   }
+  // if (!series) {
+  //   return <div>No series found</div>;
+  // }
 
   console.log("film", film);
 
