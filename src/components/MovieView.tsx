@@ -62,17 +62,31 @@ export const MovieView = () => {
       <div key={film.imdbID}>
         <h3 className="text-5xl text-center p-2 m-2">{film.Title}</h3>
         <div className="flex justify-center">
-          <img src={film.Poster} alt="" width={300} height={400} />
+          <img src={film.Poster} alt="" width={400} height={500} />
+        </div>
+        <div className="flex justify-center border-b-2 ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="54"
+            height="54"
+            viewBox="0 0 24 24"
+            fill="#418aaf"
+          >
+            <path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"></path>
+          </svg>
+          <div className="pt-2">
+            <p className="text-3xl">{film.imdbRating}/10</p>
+          </div>
         </div>
         <div className="flex justify-center">
-          <table className="m-2">
+          <table className="m-2 w-2/3">
             {filmDetails.map((detail) => (
               <tr key={detail.label}>
-                <td className="text-start border border-gray-800 p-2">
-                  <p>{detail.label}</p>
+                <td className="text-start border-b border-gray-900 p-2 ">
+                  <p className="font-bold text-lg">{detail.label}</p>
                 </td>
-                <td className="text-center border border-gray-800 p-2">
-                  <p>{detail.value}</p>
+                <td className="text-start border-b border-gray-900 p-2 w-1/2">
+                  <p className="text-lg">{detail.value}</p>
                 </td>
                 <tr>
                   <td className="text-center w-21"></td>

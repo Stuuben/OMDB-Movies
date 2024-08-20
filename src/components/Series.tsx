@@ -58,6 +58,7 @@ export const Series = () => {
   };
 
   const getSeries = async () => {
+    setLoading(true);
     try {
       const seriesPromise = [
         fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${breakingBad}`),
@@ -77,9 +78,10 @@ export const Series = () => {
 
       console.log(seriesData);
       setImdbSeries(seriesData);
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
