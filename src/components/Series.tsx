@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-//@ts-ignore
+//@ts-expect-error ???
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -21,7 +21,7 @@ export const Series = () => {
 
   const apiKey = import.meta.env.VITE_API_KEY;
   const SimpleSlider = () => {
-    var settings = {
+    const settings = {
       dots: false,
       infinite: true,
       speed: 500,

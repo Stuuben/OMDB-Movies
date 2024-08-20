@@ -1,16 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ImdbInterface } from "../models/ImbdInterface";
 
-interface Movie {
-  Title: string;
-  Year: string;
-  imdbID: string;
-  Type: string;
-  Poster: string;
-}
 export const Movies = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<ImdbInterface[]>([]);
   const [searchParams, setSearchParams] = useState("");
   const [searchClicked, setSearchClicked] = useState(false);
+  console.log("movies1", movies);
 
   const apiKey = import.meta.env.VITE_API_KEY;
 
@@ -18,7 +14,7 @@ export const Movies = () => {
     fetch(`http://www.omdbapi.com/?apikey=${apiKey}&s=${searchParams}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        console.log("data", data);
         setMovies(data.Search);
         setSearchClicked(false);
       })
@@ -67,20 +63,23 @@ export const Movies = () => {
 
       <div className="flex flex-wrap justify-center">
         {movies.map((movie) => (
-          <div
-            key={movie.imdbID}
-            className="flex flex-col items-center p-5 rounded m-2 bg-black"
-          >
-            <h3 className="text-xl">{movie.Title}</h3>
+          <Link state={{ movie }} to={`/${movie.imdbID}`}>
+            <div
+              key={movie.imdbID}
+              className="flex flex-col items-center p-5 rounded m-2 bg-black cursor-pointer"
+            >
+              <h3 className="text-xl">{movie.Title}</h3>
 
-            <img
-              src={movie.Poster}
-              alt={movie.Title}
-              style={{ width: "300px", height: "440px" }}
-            />
+              <img
+                src={movie.Poster}
+                alt={movie.Title}
+                style={{ width: "300px", height: "440px" }}
+              />
 
-            <p>{movie.Year}</p>
-          </div>
+              <p>{movie.Year}</p>
+              <p>{movie.Plot}</p>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

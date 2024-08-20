@@ -17,10 +17,11 @@ export const ShowMovies = () => {
 
   const [imdbSeries, setImdbSeries] = useState<ImdbInterface[]>([]);
   const [loading, setLoading] = useState(false);
+  console.log("imdbSeries", imdbSeries);
 
   const apiKey = import.meta.env.VITE_API_KEY;
   const SimpleSlider = () => {
-    var settings = {
+    const settings = {
       dots: false,
       infinite: true,
       speed: 500,
