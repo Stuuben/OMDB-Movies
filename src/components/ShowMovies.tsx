@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-//@ts-ignore
+import { useEffect } from "react";
+//@ts-expect-error ???
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
