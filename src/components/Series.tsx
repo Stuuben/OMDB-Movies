@@ -1,4 +1,6 @@
+
 import { useEffect } from "react";
+
 //@ts-expect-error ???
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
