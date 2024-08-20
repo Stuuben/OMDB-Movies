@@ -55,6 +55,7 @@ export const ShowMovies = () => {
   };
 
   const getMovies = async () => {
+    setLoading(true);
     try {
       const seriesPromise = [
         fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${lotr}`),
@@ -75,9 +76,10 @@ export const ShowMovies = () => {
 
       console.log(seriesData);
       setImdbSeries(seriesData);
-      setLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
