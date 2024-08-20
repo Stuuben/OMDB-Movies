@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState } from "react";
 import { ImdbInterface } from "../models/ImbdInterface";
+import { Link } from "react-router-dom";
 
 export const ShowMovies = () => {
   const lotr = "tt0167260";
@@ -33,19 +34,21 @@ export const ShowMovies = () => {
     return (
       <Slider {...settings}>
         {imdbSeries.map((series, index) => (
-          <div key={index} className="p-2">
-            <h3 className="text-xl">{series.Title}</h3>
-            <div>
-              <img
-                src={series.Poster}
-                alt=""
-                style={{ width: "300px", height: "370px" }}
-              />
-            </div>
+          <Link key={index} state={{ series }} to={`/${series.imdbID}`}>
+            <div key={index} className="p-2">
+              <h3 className="text-xl">{series.Title}</h3>
+              <div>
+                <img
+                  src={series.Poster}
+                  alt=""
+                  style={{ width: "300px", height: "370px" }}
+                />
+              </div>
 
-            <p>{series.Year}</p>
-            <p>{series.Ratings[0].Value}</p>
-          </div>
+              <p>{series.Year}</p>
+              <p>{series.Ratings[0].Value}</p>
+            </div>
+          </Link>
         ))}
       </Slider>
     );
