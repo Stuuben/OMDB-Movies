@@ -78,14 +78,21 @@ export const Movies = () => {
               <Link state={{ movie }} to={`/${movie.imdbID}`}>
                 <div
                   key={movie.imdbID}
-                  className="flex flex-col items-center p-5 rounded m-2 bg-black cursor-pointer"
+                  className="flex flex-col justify-center w-96 items-center p-5 rounded m-2 bg-black cursor-pointer"
                 >
-                  <h3 className="text-xl">{movie.Title}</h3>
+                  <h3 className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-xs">
+                    {movie.Title}
+                  </h3>
 
                   <img
                     src={movie.Poster}
                     alt={movie.Title}
                     style={{ width: "300px", height: "440px" }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = "noimages.png";
+                    }}
                   />
 
                   <p>{movie.Year}</p>

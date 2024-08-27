@@ -10,18 +10,19 @@ import { Link } from "react-router-dom";
 
 const apiKey = import.meta.env.VITE_API_KEY;
 
-const moviesArray = [
-  "tt0167260", // Lord of the Rings: The Fellowship of the Ring
-  "tt1375666", // Inception
-  "tt0133093", // The Matrix
-  "tt0816692", // Interstellar
-  "tt0120815", // Saving Private Ryan
-  "tt0088763", // Back to the Future
-  "tt0172495", // Gladiator
+const seriesImdbIds = [
+  "tt0903747", // Breaking Bad
+  "tt0944947", // Game of Thrones
+  "tt2861424", // Rick and Morty
+  "tt11126994", // Arcane
+  "tt0108778", // Friends
+  "tt0182576", // Family Guy
+  "tt6470478", // Good Doctor
+  "tt1190634", // The Boys
 ];
 
-const fetchSeriesData = async (apiKey: string, moviesArray: string[]) => {
-  const seriesPromises = moviesArray.map((id: string) =>
+const fetchSeriesData = async (apiKey: string, seriesImdbIds: string[]) => {
+  const seriesPromises = seriesImdbIds.map((id: string) =>
     fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${id}`)
   );
 
@@ -39,12 +40,12 @@ const fetchSeriesData = async (apiKey: string, moviesArray: string[]) => {
   }
 };
 
-export const ShowMovies = () => {
+export const SerieSlider = () => {
   useEffect(() => {
     const getSeries = async () => {
       setLoading(true);
       try {
-        const seriesData = await fetchSeriesData(apiKey, moviesArray);
+        const seriesData = await fetchSeriesData(apiKey, seriesImdbIds);
         setImdbSeries(seriesData);
       } catch (error) {
         console.error("Failed to fetch series data:", error);
@@ -76,7 +77,9 @@ export const ShowMovies = () => {
         {imdbSeries.map((series, index) => (
           <Link key={index} state={{ series }} to={`/${series.imdbID}`}>
             <div key={index} className="p-2 cursor-pointer">
-              <h3 className="text-xl">{series.Title}</h3>
+              <h3 className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-xs">
+                {series.Title}
+              </h3>
               <div>
                 <img
                   src={series.Poster}

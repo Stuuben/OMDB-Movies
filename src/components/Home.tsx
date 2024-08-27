@@ -1,13 +1,13 @@
 import { Movies } from "./Movies";
-import { Series } from "./Series";
-import { ShowMovies } from "./ShowMovies";
+import { SerieSlider } from "./SerieSlider";
+import { MovieSlider } from "./MovieSlider";
 
 export const Home = () => {
   return (
     <div className="bg-black">
-      <Movies></Movies>
-      <Series></Series>
-      <ShowMovies></ShowMovies>
+      <Movies />
+      <SerieSlider />
+      <MovieSlider />
     </div>
   );
 };
