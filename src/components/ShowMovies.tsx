@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+
 //@ts-expect-error ???
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -7,20 +8,57 @@ import { useState } from "react";
 import { ImdbInterface } from "../models/ImbdInterface";
 import { Link } from "react-router-dom";
 
+const apiKey = import.meta.env.VITE_API_KEY;
+
+const moviesArray = [
+  "tt0167260", // Lord of the Rings: The Fellowship of the Ring
+  "tt1375666", // Inception
+  "tt0133093", // The Matrix
+  "tt0816692", // Interstellar
+  "tt0120815", // Saving Private Ryan
+  "tt0088763", // Back to the Future
+  "tt0172495", // Gladiator
+];
+
+const fetchSeriesData = async (apiKey: string, moviesArray: string[]) => {
+  const seriesPromises = moviesArray.map((id: string) =>
+    fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${id}`)
+  );
+
+  try {
+    const responses = await Promise.all(seriesPromises);
+    const seriesData = await Promise.all(
+      responses.map((response: { json: () => Promise<ImdbInterface> }) =>
+        response.json()
+      )
+    );
+    return seriesData;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const ShowMovies = () => {
-  const lotr = "tt0167260";
-  const inception = "tt1375666";
-  const matrix = "tt0133093";
-  const interstellar = "tt0816692";
-  const savingPrivateRyan = "tt0120815";
-  const backToTheFuture = "tt0088763";
-  const gladiator = "tt0172495";
+  useEffect(() => {
+    const getSeries = async () => {
+      setLoading(true);
+      try {
+        const seriesData = await fetchSeriesData(apiKey, moviesArray);
+        setImdbSeries(seriesData);
+      } catch (error) {
+        console.error("Failed to fetch series data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getSeries();
+  }, []);
 
   const [imdbSeries, setImdbSeries] = useState<ImdbInterface[]>([]);
   const [loading, setLoading] = useState(false);
-  console.log("imdbSeries", imdbSeries);
 
-  const apiKey = import.meta.env.VITE_API_KEY;
   const SimpleSlider = () => {
     const settings = {
       dots: false,
@@ -31,11 +69,13 @@ export const ShowMovies = () => {
       arrows: true,
     };
 
+    console.log("imdbSeries", imdbSeries);
+
     return (
       <Slider {...settings}>
         {imdbSeries.map((series, index) => (
           <Link key={index} state={{ series }} to={`/${series.imdbID}`}>
-            <div key={index} className="p-2">
+            <div key={index} className="p-2 cursor-pointer">
               <h3 className="text-xl">{series.Title}</h3>
               <div>
                 <img
@@ -54,51 +94,18 @@ export const ShowMovies = () => {
     );
   };
 
-  const getMovies = async () => {
-    setLoading(true);
-    try {
-      const seriesPromise = [
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${lotr}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${inception}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${matrix}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${interstellar}`),
-        fetch(
-          `http://www.omdbapi.com/?apikey=${apiKey}&i=${savingPrivateRyan}`
-        ),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${backToTheFuture}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${gladiator}`),
-      ];
-
-      const responses = await Promise.all(seriesPromise);
-      const seriesData = await Promise.all(
-        responses.map((response) => response.json())
-      );
-
-      console.log(seriesData);
-      setImdbSeries(seriesData);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getMovies();
-  }, []);
-
   if (loading) {
     return <div>Loading...</div>;
   }
   return (
-    <div className="pt-20">
+    <>
       <div className="border-t-2 p-2 text-4xl text-left bg-gray-800">
-        Movies
+        Series
       </div>
 
       <div>
         <SimpleSlider></SimpleSlider>
       </div>
-    </div>
+    </>
   );
 };

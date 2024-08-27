@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ImdbInterface } from "../models/ImbdInterface";
+import "./Movies.css";
 
 export const Movies = () => {
   const [movies, setMovies] = useState<ImdbInterface[]>([]);
   const [searchParams, setSearchParams] = useState("");
   const [searchClicked, setSearchClicked] = useState(false);
+
   console.log("movies1", movies);
 
   const apiKey = import.meta.env.VITE_API_KEY;
 
   const getMovies = () => {
+    setSearchClicked(true);
+
     fetch(`http://www.omdbapi.com/?apikey=${apiKey}&s=${searchParams}`)
       .then((response) => response.json())
       .then((data) => {
@@ -20,6 +24,7 @@ export const Movies = () => {
       })
       .catch((error) => {
         console.error(error);
+        setMovies([]);
       });
   };
 
@@ -36,7 +41,8 @@ export const Movies = () => {
           />
           <button
             onClick={getMovies}
-            className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            style={{ backgroundColor: "rgb(51, 166, 211)" }}
+            className=" text-white p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             Search
           </button>
@@ -62,25 +68,33 @@ export const Movies = () => {
       )}
 
       <div className="flex flex-wrap justify-center">
-        {movies.map((movie) => (
-          <Link state={{ movie }} to={`/${movie.imdbID}`}>
-            <div
-              key={movie.imdbID}
-              className="flex flex-col items-center p-5 rounded m-2 bg-black cursor-pointer"
-            >
-              <h3 className="text-xl">{movie.Title}</h3>
+        {movies === undefined ? (
+          <div className="flex flex-col items-center p-5 rounded m-2">
+            <h3 className="text-xl">No movies found</h3>
+          </div>
+        ) : (
+          <div className="flex flex-wrap justify-center">
+            {movies.map((movie) => (
+              <Link state={{ movie }} to={`/${movie.imdbID}`}>
+                <div
+                  key={movie.imdbID}
+                  className="flex flex-col items-center p-5 rounded m-2 bg-black cursor-pointer"
+                >
+                  <h3 className="text-xl">{movie.Title}</h3>
 
-              <img
-                src={movie.Poster}
-                alt={movie.Title}
-                style={{ width: "300px", height: "440px" }}
-              />
+                  <img
+                    src={movie.Poster}
+                    alt={movie.Title}
+                    style={{ width: "300px", height: "440px" }}
+                  />
 
-              <p>{movie.Year}</p>
-              <p>{movie.Plot}</p>
-            </div>
-          </Link>
-        ))}
+                  <p>{movie.Year}</p>
+                  <p>{movie.Plot}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

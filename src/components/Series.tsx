@@ -8,20 +8,58 @@ import { useState } from "react";
 import { ImdbInterface } from "../models/ImbdInterface";
 import { Link } from "react-router-dom";
 
+const apiKey = import.meta.env.VITE_API_KEY;
+
+const seriesImdbIds = [
+  "tt0903747", // Breaking Bad
+  "tt0944947", // Game of Thrones
+  "tt2861424", // Rick and Morty
+  "tt11126994", // Arcane
+  "tt0108778", // Friends
+  "tt0182576", // Family Guy
+  "tt6470478", // Good Doctor
+  "tt1190634", // The Boys
+];
+
+const fetchSeriesData = async (apiKey: string, seriesImdbIds: string[]) => {
+  const seriesPromises = seriesImdbIds.map((id: string) =>
+    fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${id}`)
+  );
+
+  try {
+    const responses = await Promise.all(seriesPromises);
+    const seriesData = await Promise.all(
+      responses.map((response: { json: () => Promise<ImdbInterface> }) =>
+        response.json()
+      )
+    );
+    return seriesData;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const Series = () => {
-  const breakingBad = "tt0903747";
-  const gameOfThrones = "tt0944947";
-  const rickAndMorty = "tt2861424";
-  const arcane = "tt11126994";
-  const friends = "tt0108778";
-  const familyGuy = "tt0182576";
-  const goodDoctor = "tt6470478";
-  const theBoys = "tt1190634";
+  useEffect(() => {
+    const getSeries = async () => {
+      setLoading(true);
+      try {
+        const seriesData = await fetchSeriesData(apiKey, seriesImdbIds);
+        setImdbSeries(seriesData);
+      } catch (error) {
+        console.error("Failed to fetch series data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getSeries();
+  }, []);
 
   const [imdbSeries, setImdbSeries] = useState<ImdbInterface[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const apiKey = import.meta.env.VITE_API_KEY;
   const SimpleSlider = () => {
     const settings = {
       dots: false,
@@ -56,38 +94,6 @@ export const Series = () => {
       </Slider>
     );
   };
-
-  const getSeries = async () => {
-    setLoading(true);
-    try {
-      const seriesPromise = [
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${breakingBad}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${gameOfThrones}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${rickAndMorty}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${arcane}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${friends}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${theBoys}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${familyGuy}`),
-        fetch(`http://www.omdbapi.com/?apikey=${apiKey}&i=${goodDoctor}`),
-      ];
-
-      const responses = await Promise.all(seriesPromise);
-      const seriesData = await Promise.all(
-        responses.map((response) => response.json())
-      );
-
-      console.log(seriesData);
-      setImdbSeries(seriesData);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getSeries();
-  }, []);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -52,10 +52,10 @@ export const MovieView = () => {
     <div className="border-t-2 p-2 m-2">
       <div key={film.imdbID}>
         <h3 className="text-5xl text-center p-2 m-2">{film.Title}</h3>
-        <div className="flex justify-center">
+        <div className="flex justify-center p-4">
           <img src={film.Poster} alt="" width={400} height={500} />
         </div>
-        <div className="flex justify-between border-b-2 ">
+        <div className="flex justify-between border-b-2 p-2 ">
           <div className=" flex justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
